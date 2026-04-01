@@ -43,4 +43,16 @@ public class AuthController {
         ApiResponse response = authService.loginStudent(request);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/faculty/login")
+    public ResponseEntity<ApiResponse> loginFaculty(@RequestBody LoginDTO request) {
+        ApiResponse response = authService.loginFaculty(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<ApiResponse> loginAdmin(@RequestBody LoginDTO request) {
+        ApiResponse response = authService.loginAdmin(request);
+        return ResponseEntity.ok(response);
+    }
 }

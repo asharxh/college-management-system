@@ -12,4 +12,9 @@ public interface AuthService {
     ApiResponse registerAdmin(AdminRegisterDTO request);
 
     ApiResponse loginStudent(LoginDTO request);
+
+    ApiResponse loginFaculty(LoginDTO request);
+
+    ApiResponse loginAdmin(LoginDTO request);
+
 }

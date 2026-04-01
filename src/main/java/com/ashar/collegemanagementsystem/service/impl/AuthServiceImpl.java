@@ -129,4 +129,52 @@ public class AuthServiceImpl implements AuthService {
                 .data(data)
                 .build();
     }
+
+    @Override
+    public ApiResponse loginFaculty(LoginDTO request) {
+
+        FacultyPersonal faculty = facultyRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), faculty.getPasswordHash())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        Map<String, Object> data = Map.of(
+                "userId", faculty.getId(),
+                "name", faculty.getName(),
+                "email", faculty.getEmail(),
+                "role", "FACULTY"
+        );
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Login successful")
+                .data(data)
+                .build();
+    }
+
+    @Override
+    public ApiResponse loginAdmin(LoginDTO request) {
+
+        Admin admin = adminRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), admin.getPasswordHash())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        Map<String, Object> data = Map.of(
+                "userId", admin.getId(),
+                "name", admin.getName(),
+                "email", admin.getEmail(),
+                "role", admin.getRole()
+        );
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Login successful")
+                .data(data)
+                .build();
+    }
 }
