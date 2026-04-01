@@ -1,7 +1,9 @@
 package com.ashar.collegemanagementsystem.controller;
 
 import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
+import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 import com.ashar.collegemanagementsystem.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/student/register")
-    public ResponseEntity<String> registerStudent(@RequestBody StudentRegisterDTO request) {
+    public ResponseEntity<ApiResponse> registerStudent(@Valid @RequestBody StudentRegisterDTO request) {
 
-        String response = authService.registerStudent(request);
+        ApiResponse response = authService.registerStudent(request);
         return ResponseEntity.ok(response);
     }
 }

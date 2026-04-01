@@ -1,6 +1,7 @@
 package com.ashar.collegemanagementsystem.service.impl;
 
 import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
+import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 import com.ashar.collegemanagementsystem.entity.Student;
 import com.ashar.collegemanagementsystem.repository.StudentRepository;
 import com.ashar.collegemanagementsystem.service.AuthService;
@@ -19,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public String registerStudent(StudentRegisterDTO request) {
+    public ApiResponse registerStudent(StudentRegisterDTO request) {
 
         if (studentRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already registered");
@@ -37,6 +38,10 @@ public class AuthServiceImpl implements AuthService {
 
         studentRepository.save(student);
 
-        return "Student registered successfully";
+        return ApiResponse.builder()
+                .success(true)
+                .message("Student registered successfully")
+                .data(student.getId())
+                .build();
     }
 }

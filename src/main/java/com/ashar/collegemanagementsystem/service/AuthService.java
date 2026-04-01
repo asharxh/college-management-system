@@ -1,8 +1,9 @@
 package com.ashar.collegemanagementsystem.service;
 
 import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
+import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 
 public interface AuthService {
 
-    String registerStudent(StudentRegisterDTO request);
+    ApiResponse registerStudent(StudentRegisterDTO request);
 }
