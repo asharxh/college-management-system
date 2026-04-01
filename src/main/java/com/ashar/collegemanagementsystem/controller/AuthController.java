@@ -1,5 +1,6 @@
 package com.ashar.collegemanagementsystem.controller;
 
+import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 import com.ashar.collegemanagementsystem.service.AuthService;
@@ -19,6 +20,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse> registerStudent(@Valid @RequestBody StudentRegisterDTO request) {
 
         ApiResponse response = authService.registerStudent(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/faculty/register")
+    public ResponseEntity<ApiResponse> registerFaculty(@Valid @RequestBody FacultyRegisterDTO request) {
+
+        ApiResponse response = authService.registerFaculty(request);
         return ResponseEntity.ok(response);
     }
 }
