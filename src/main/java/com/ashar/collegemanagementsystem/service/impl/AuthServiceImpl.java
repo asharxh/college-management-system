@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -115,10 +116,17 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        Map<String, Object> data = Map.of(
+                "userId", student.getId(),
+                "name", student.getName(),
+                "email", student.getEmail(),
+                "role", "STUDENT"
+        );
+
         return ApiResponse.builder()
                 .success(true)
                 .message("Login successful")
-                .data(student.getId())
+                .data(data)
                 .build();
     }
 }
