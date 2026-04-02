@@ -11,6 +11,7 @@ import com.ashar.collegemanagementsystem.entity.Student;
 import com.ashar.collegemanagementsystem.repository.AdminRepository;
 import com.ashar.collegemanagementsystem.repository.FacultyRepository;
 import com.ashar.collegemanagementsystem.repository.StudentRepository;
+import com.ashar.collegemanagementsystem.security.JwtUtil;
 import com.ashar.collegemanagementsystem.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final AdminRepository adminRepository;
+    private final JwtUtil jwtUtil;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -116,7 +118,11 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String token = jwtUtil.generateToken(student.getId(), student.getEmail(), "STUDENT");
+
         Map<String, Object> data = Map.of(
+                "token", token,
+                "type", "Bearer",
                 "userId", student.getId(),
                 "name", student.getName(),
                 "email", student.getEmail(),
@@ -140,7 +146,14 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String token = jwtUtil.generateToken(
+                faculty.getId(),
+                faculty.getEmail(),
+                "FACULTY"
+        );
         Map<String, Object> data = Map.of(
+                "token", token,
+                "type", "Bearer",
                 "userId", faculty.getId(),
                 "name", faculty.getName(),
                 "email", faculty.getEmail(),
@@ -164,7 +177,14 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String token = jwtUtil.generateToken(
+                admin.getId(),
+                admin.getEmail(),
+                admin.getRole()
+        );
         Map<String, Object> data = Map.of(
+                "token", token,
+                "type", "Bearer",
                 "userId", admin.getId(),
                 "name", admin.getName(),
                 "email", admin.getEmail(),
