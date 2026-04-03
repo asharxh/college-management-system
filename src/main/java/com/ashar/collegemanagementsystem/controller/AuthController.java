@@ -55,4 +55,19 @@ public class AuthController {
         ApiResponse response = authService.loginAdmin(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/student/test")
+    public String studentTest() {
+        return "Student Access Granted";
+    }
+
+    @GetMapping("/faculty/test")
+    public String facultyTest() {
+        return "Faculty Access Granted";
+    }
+
+    @GetMapping("/admin/test")
+    public String adminTest() {
+        return "Admin Access Granted";
+    }
 }
