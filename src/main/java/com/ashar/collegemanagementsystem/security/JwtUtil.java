@@ -36,8 +36,10 @@ public class JwtUtil {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("Token expired");
         } catch (JwtException e) {
-            return false;
+            throw new RuntimeException("Invalid token");
         }
     }
 

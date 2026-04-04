@@ -9,6 +9,7 @@ import com.ashar.collegemanagementsystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -56,18 +57,21 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/student/test")
-    public String studentTest() {
-        return "Student Access Granted";
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('STUDENT')")
+    public String getStudentProfile() {
+        return "Student Profile";
     }
 
-    @GetMapping("/faculty/test")
-    public String facultyTest() {
-        return "Faculty Access Granted";
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('FACULTY')")
+    public String getFacultyStudents() {
+        return "Faculty Access";
     }
 
-    @GetMapping("/admin/test")
-    public String adminTest() {
-        return "Admin Access Granted";
+    @GetMapping("/reports")
+    @PreAuthorize("hasAnyRole('ADMIN','SuperAdmin')")
+    public String getAdminReports() {
+        return "Admin Reports";
     }
 }

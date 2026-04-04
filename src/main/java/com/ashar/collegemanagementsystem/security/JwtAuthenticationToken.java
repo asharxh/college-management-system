@@ -11,7 +11,9 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final String role;
 
     public JwtAuthenticationToken(String email, String role) {
-        super(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
+        super(Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + role)
+        ));
         this.email = email;
         this.role = role;
         setAuthenticated(true);
@@ -25,9 +27,5 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return email;
-    }
-
-    public String getRole() {
-        return role;
     }
 }
