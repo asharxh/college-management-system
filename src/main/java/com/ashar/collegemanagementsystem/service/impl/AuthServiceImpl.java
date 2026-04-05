@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -334,18 +335,18 @@ public class AuthServiceImpl implements AuthService {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        Map<String, Object> data = Map.of(
-                "id", student.getId(),
-                "name", student.getName(),
-                "email", student.getEmail(),
-                "phone", student.getPhone(),
-                "branch", student.getBranch(),
-                "semester", student.getSemester(),
-                "enrollmentYear", student.getEnrollmentYear(),
-                "address", student.getAddress(),
-                "city", student.getCity(),
-                "pincode", student.getPincode()
-        );
+        Map<String, Object> data = new HashMap<>();
+
+        data.put("id", student.getId());
+        data.put("name", student.getName());
+        data.put("email", student.getEmail());
+        data.put("phone", student.getPhone());
+        data.put("branch", student.getBranch());
+        data.put("semester", student.getSemester());
+        data.put("enrollmentYear", student.getEnrollmentYear());
+        data.put("address", student.getAddress());
+        data.put("city", student.getCity());
+        data.put("pincode", student.getPincode());
 
         return ApiResponse.builder()
                 .success(true)
