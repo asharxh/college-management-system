@@ -3,6 +3,7 @@ package com.ashar.collegemanagementsystem.service.impl;
 import com.ashar.collegemanagementsystem.dto.ChangePasswordDTO;
 import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.ResetPasswordDTO;
+import com.ashar.collegemanagementsystem.dto.UpdateStudentDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
@@ -352,6 +353,39 @@ public class AuthServiceImpl implements AuthService {
                 .success(true)
                 .message("Profile fetched successfully")
                 .data(data)
+                .build();
+    }
+
+    @Override
+    public ApiResponse updateStudentProfile(UpdateStudentDTO request) {
+
+        String email = (String) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        if (request.getPhone() != null) {
+            student.setPhone(request.getPhone());
+        }
+
+        if (request.getAddress() != null) {
+            student.setAddress(request.getAddress());
+        }
+
+        if (request.getCity() != null) {
+            student.setCity(request.getCity());
+        }
+
+        if (request.getPincode() != null) {
+            student.setPincode(request.getPincode());
+        }
+
+        studentRepository.save(student);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Profile updated successfully")
                 .build();
     }
 }
