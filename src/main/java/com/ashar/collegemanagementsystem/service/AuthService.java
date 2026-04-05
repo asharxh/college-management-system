@@ -26,4 +26,6 @@ public interface AuthService {
 
     ApiResponse changePassword(ChangePasswordDTO request);
 
+    ApiResponse getStudentProfile();
+
 }

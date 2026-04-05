@@ -324,4 +324,33 @@ public class AuthServiceImpl implements AuthService {
                 .message("Password changed successfully")
                 .build();
     }
+
+    @Override
+    public ApiResponse getStudentProfile() {
+
+        String email = (String) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        Map<String, Object> data = Map.of(
+                "id", student.getId(),
+                "name", student.getName(),
+                "email", student.getEmail(),
+                "phone", student.getPhone(),
+                "branch", student.getBranch(),
+                "semester", student.getSemester(),
+                "enrollmentYear", student.getEnrollmentYear(),
+                "address", student.getAddress(),
+                "city", student.getCity(),
+                "pincode", student.getPincode()
+        );
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Profile fetched successfully")
+                .data(data)
+                .build();
+    }
 }
