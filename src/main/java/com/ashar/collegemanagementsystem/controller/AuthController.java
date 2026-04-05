@@ -1,5 +1,6 @@
 package com.ashar.collegemanagementsystem.controller;
 
+import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
@@ -73,5 +74,12 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('ADMIN','SuperAdmin')")
     public String getAdminReports() {
         return "Admin Reports";
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody ForgotPasswordDTO request) {
+
+        ApiResponse response = authService.forgotPassword(request);
+        return ResponseEntity.ok(response);
     }
 }

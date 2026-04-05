@@ -1,5 +1,6 @@
 package com.ashar.collegemanagementsystem.service.impl;
 
+import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
@@ -7,9 +8,11 @@ import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 import com.ashar.collegemanagementsystem.entity.Admin;
 import com.ashar.collegemanagementsystem.entity.FacultyPersonal;
+import com.ashar.collegemanagementsystem.entity.PasswordResetToken;
 import com.ashar.collegemanagementsystem.entity.Student;
 import com.ashar.collegemanagementsystem.repository.AdminRepository;
 import com.ashar.collegemanagementsystem.repository.FacultyRepository;
+import com.ashar.collegemanagementsystem.repository.PasswordResetTokenRepository;
 import com.ashar.collegemanagementsystem.repository.StudentRepository;
 import com.ashar.collegemanagementsystem.security.JwtUtil;
 import com.ashar.collegemanagementsystem.service.AuthService;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final FacultyRepository facultyRepository;
     private final AdminRepository adminRepository;
     private final JwtUtil jwtUtil;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -195,6 +200,39 @@ public class AuthServiceImpl implements AuthService {
                 .success(true)
                 .message("Login successful")
                 .data(data)
+                .build();
+    }
+
+    @Override
+    public ApiResponse forgotPassword(ForgotPasswordDTO request) {
+
+        String email = request.getEmail();
+
+        boolean exists = studentRepository.existsByEmail(email)
+                || facultyRepository.existsByEmail(email)
+                || adminRepository.existsByEmail(email);
+
+        if (!exists) {
+            throw new RuntimeException("Email not registered");
+        }
+
+        passwordResetTokenRepository.deleteByEmail(email);
+
+        String token = UUID.randomUUID().toString();
+
+        PasswordResetToken resetToken = PasswordResetToken.builder()
+                .email(email)
+                .token(token)
+                .expiryDate(LocalDateTime.now().plusMinutes(15))
+                .build();
+
+        passwordResetTokenRepository.save(resetToken);
+
+        System.out.println("RESET TOKEN: " + token);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Reset link sent to email")
                 .build();
     }
 }

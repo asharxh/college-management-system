@@ -1,5 +1,6 @@
 package com.ashar.collegemanagementsystem.service;
 
+import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.*;
 import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 
@@ -16,5 +17,7 @@ public interface AuthService {
     ApiResponse loginFaculty(LoginDTO request);
 
     ApiResponse loginAdmin(LoginDTO request);
+
+    ApiResponse forgotPassword(ForgotPasswordDTO request);
 
 }
