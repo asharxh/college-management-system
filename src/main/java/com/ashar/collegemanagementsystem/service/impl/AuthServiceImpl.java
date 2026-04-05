@@ -1,5 +1,6 @@
 package com.ashar.collegemanagementsystem.service.impl;
 
+import com.ashar.collegemanagementsystem.dto.ChangePasswordDTO;
 import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.ResetPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
@@ -20,6 +21,7 @@ import com.ashar.collegemanagementsystem.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -274,6 +276,52 @@ public class AuthServiceImpl implements AuthService {
         return ApiResponse.builder()
                 .success(true)
                 .message("Password reset successful")
+                .build();
+    }
+
+    @Override
+    public ApiResponse changePassword(ChangePasswordDTO request) {
+
+        String email = (String) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        if (studentRepository.existsByEmail(email)) {
+
+            Student student = studentRepository.findByEmail(email).get();
+
+            if (!passwordEncoder.matches(request.getOldPassword(), student.getPasswordHash())) {
+                throw new RuntimeException("Old password is incorrect");
+            }
+
+            student.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            studentRepository.save(student);
+
+        } else if (facultyRepository.existsByEmail(email)) {
+
+            FacultyPersonal faculty = facultyRepository.findByEmail(email).get();
+
+            if (!passwordEncoder.matches(request.getOldPassword(), faculty.getPasswordHash())) {
+                throw new RuntimeException("Old password is incorrect");
+            }
+
+            faculty.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            facultyRepository.save(faculty);
+
+        } else if (adminRepository.existsByEmail(email)) {
+
+            Admin admin = adminRepository.findByEmail(email).get();
+
+            if (!passwordEncoder.matches(request.getOldPassword(), admin.getPasswordHash())) {
+                throw new RuntimeException("Old password is incorrect");
+            }
+
+            admin.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            adminRepository.save(admin);
+        }
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Password changed successfully")
                 .build();
     }
 }
