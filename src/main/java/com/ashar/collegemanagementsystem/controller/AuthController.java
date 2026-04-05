@@ -1,6 +1,7 @@
 package com.ashar.collegemanagementsystem.controller;
 
 import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
+import com.ashar.collegemanagementsystem.dto.ResetPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
@@ -80,6 +81,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse> forgotPassword(@RequestBody ForgotPasswordDTO request) {
 
         ApiResponse response = authService.forgotPassword(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordDTO request) {
+
+        ApiResponse response = authService.resetPassword(request);
         return ResponseEntity.ok(response);
     }
 }

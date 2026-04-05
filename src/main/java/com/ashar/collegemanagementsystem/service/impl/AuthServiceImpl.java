@@ -1,6 +1,7 @@
 package com.ashar.collegemanagementsystem.service.impl;
 
 import com.ashar.collegemanagementsystem.dto.ForgotPasswordDTO;
+import com.ashar.collegemanagementsystem.dto.ResetPasswordDTO;
 import com.ashar.collegemanagementsystem.dto.request.AdminRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.FacultyRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
@@ -223,7 +224,7 @@ public class AuthServiceImpl implements AuthService {
         PasswordResetToken resetToken = PasswordResetToken.builder()
                 .email(email)
                 .token(token)
-                .expiryDate(LocalDateTime.now().plusMinutes(15))
+                .expiryDate(LocalDateTime.now().plusMinutes(2))
                 .build();
 
         passwordResetTokenRepository.save(resetToken);
@@ -233,6 +234,46 @@ public class AuthServiceImpl implements AuthService {
         return ApiResponse.builder()
                 .success(true)
                 .message("Reset link sent to email")
+                .build();
+    }
+
+    @Override
+    public ApiResponse resetPassword(ResetPasswordDTO request) {
+
+        PasswordResetToken resetToken = passwordResetTokenRepository
+                .findByToken(request.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token expired");
+        }
+
+        String email = resetToken.getEmail();
+
+        if (studentRepository.existsByEmail(email)) {
+
+            Student student = studentRepository.findByEmail(email).get();
+            student.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            studentRepository.save(student);
+
+        } else if (facultyRepository.existsByEmail(email)) {
+
+            FacultyPersonal faculty = facultyRepository.findByEmail(email).get();
+            faculty.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            facultyRepository.save(faculty);
+
+        } else if (adminRepository.existsByEmail(email)) {
+
+            Admin admin = adminRepository.findByEmail(email).get();
+            admin.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            adminRepository.save(admin);
+        }
+
+        passwordResetTokenRepository.delete(resetToken);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Password reset successful")
                 .build();
     }
 }
