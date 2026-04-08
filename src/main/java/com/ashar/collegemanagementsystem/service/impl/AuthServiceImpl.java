@@ -19,6 +19,8 @@ import com.ashar.collegemanagementsystem.repository.PasswordResetTokenRepository
 import com.ashar.collegemanagementsystem.repository.StudentRepository;
 import com.ashar.collegemanagementsystem.security.JwtUtil;
 import com.ashar.collegemanagementsystem.service.AuthService;
+import com.ashar.collegemanagementsystem.service.EmailService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
     private final AdminRepository adminRepository;
     private final JwtUtil jwtUtil;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -209,7 +212,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public ApiResponse forgotPassword(ForgotPasswordDTO request) {
+
+        System.out.println("EMAIL_USERNAME = " + System.getenv("EMAIL_USERNAME"));
+        System.out.println("EMAIL_PASSWORD = " + System.getenv("EMAIL_PASSWORD"));
 
         String email = request.getEmail();
 
@@ -233,7 +240,17 @@ public class AuthServiceImpl implements AuthService {
 
         passwordResetTokenRepository.save(resetToken);
 
-        System.out.println("RESET TOKEN: " + token);
+        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+
+        String subject = "Password Reset Request";
+
+        String body = "Hello,\n\n" +
+                "Click the link below to reset your password:\n" +
+                resetLink +
+                "\n\nThis link will expire in 15 minutes.\n\n" +
+                "If you did not request this, please ignore.";
+
+        emailService.sendEmail(email, subject, body);
 
         return ApiResponse.builder()
                 .success(true)
@@ -242,6 +259,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public ApiResponse resetPassword(ResetPasswordDTO request) {
 
         PasswordResetToken resetToken = passwordResetTokenRepository
