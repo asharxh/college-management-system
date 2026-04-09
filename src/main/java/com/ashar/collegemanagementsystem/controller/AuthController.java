@@ -9,6 +9,8 @@ import com.ashar.collegemanagementsystem.dto.request.LoginDTO;
 import com.ashar.collegemanagementsystem.dto.request.StudentRegisterDTO;
 import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
 import com.ashar.collegemanagementsystem.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Student APIs", description = "Operations related to students")
 public class AuthController {
 
     private final AuthService authService;
@@ -42,6 +45,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Student Login", description = "Authenticate student and return JWT token")
     @PostMapping("/student/login")
     public ResponseEntity<ApiResponse> loginStudent(@RequestBody LoginDTO request) {
         ApiResponse response = authService.loginStudent(request);
