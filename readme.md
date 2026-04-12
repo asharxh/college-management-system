@@ -112,7 +112,7 @@ PUT  /api/student/profile
 
 ### Clone Repository
 
-git clone https://github.com/your-username/college-management-system.git
+git clone https://github.com/asharxh/college-management-system.git
 
 ---
 
