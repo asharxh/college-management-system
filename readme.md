@@ -221,6 +221,6 @@ Neon PostgreSQL (Cloud Hosted)
 
 ## Author
 
-Name: Ashar Arif
-Project: College Management System
-https://www.linkedin.com/in/ashararif/
+- Name: Ashar Arif
+- Project: College Management System
+- https://www.linkedin.com/in/ashararif/
