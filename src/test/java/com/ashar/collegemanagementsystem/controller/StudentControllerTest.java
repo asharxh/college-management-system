@@ -1,12 +1,16 @@
 package com.ashar.collegemanagementsystem.controller;
 
+import com.ashar.collegemanagementsystem.TestSecurityConfig;
 import com.ashar.collegemanagementsystem.dto.UpdateStudentDTO;
 import com.ashar.collegemanagementsystem.dto.response.ApiResponse;
+import com.ashar.collegemanagementsystem.security.JwtUtil;
 import com.ashar.collegemanagementsystem.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -17,6 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(TestSecurityConfig.class)
 class StudentControllerTest {
 
     @Autowired
@@ -27,6 +33,9 @@ class StudentControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtUtil jwtUtil;
 
     @Test
     void testGetProfile() throws Exception {
